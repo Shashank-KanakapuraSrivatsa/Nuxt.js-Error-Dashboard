@@ -31,18 +31,16 @@
                 <h1>Error Text</h1>
                 <h1>User Action</h1>
               </div>
-              <unresolved />
-              <!-- <div id="singleLineEntry" class="grid grid-cols-3 text-center my-6" v-for="error in unresolved" :key="error.index" :error="getUnresolved">
-                <p>{{error.code}}</p>
+              <div v-for="error in setLists.unresolved" :key="error.id">
                 <p>{{error.text}}</p>
-                <button> <span class="bg-blue-600" @click="changeState(error.index,error.code,error.text)" v-bind="error.code"> Move to Resolved</span></button>
-              </div> -->
+              </div>
+              <!-- <unresolved /> -->
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
-
+              <resolved />
             </div>
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
-
+              <backlog />
             </div>
           </div>
         </div>
@@ -55,62 +53,24 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex';
 export default {
-   async asyncData({ $axios }) {
-    try {
-      const { resolved, unresolved, backlog } = await $axios.$get(
-        "http://localhost:8000/get_lists"
-      );
-      return {
-        resolved,
-        unresolved,
-        backlog
-      };
-    } catch (error) {
-      console.log(
-        `Couldn't get error lists:\n${error}\nDid you start the API?`
-      );
-      console.log(
-        "HINT: You can comment out the full `asyncData` method and work with mocked data for UI/UX development, if you want to."
-      );
-    }
-  },
+   
     data() {
     return {
-      unresolved : [],
-      resolved : [],
-      backlog : [],
+      // unresolved : [],
+      // resolved : [],
+      // backlog : [],
       openTab: 1
     };
   },
+  computed : {
+            ...mapActions(['SET_UNRESOLVED'])
+    },
   methods: {
-    // ...mapActions(['asyncData']),
     toggleTabs: function(tabNumber){
       this.openTab = tabNumber
-    },
-    
-    changeState : function(errorIndex, errorCode, errorDescription){
-      if (String(errorDescription).includes("unresolved") === true) {
-        var newUnresolved = []
-        var arrayLength = this.unresolved.length
-        var generatedKey = errorIndex - arrayLength
-        var deletedUnresolved = this.unresolved.splice(generatedKey,1,newUnresolved)
-        this.$nextTick(function () {})
-        // this.$store.unresolved = this.unresolved
-      }
-      else if (String(errorDescription).includes("resolved") === true) {
-        var newResolved = []
-        var arrayLength = this.resolved.length
-        var generatedKey = errorIndex - arrayLength
-        var deletedResolved = this.resolved.splice(generatedKey,1,newResolved)
-      }
-      else if (String(errorDescription).includes("backlog") === true) {
-        // var newBacklog = []
-        // var arrayLength = this.backlog.length
-        // var generatedKey = errorIndex - arrayLength
-        // var deletedBacklog = this.backlog.splice(generatedKey,1,newBacklog)
-      }
-    }
+    }, 
   }
 };
 </script>
