@@ -36,7 +36,10 @@
               <div class="grid grid-cols-3 max-h-3 shadow-lg rounded py-6" v-for="error in resolved" :key="error.index">
                 <div class="text-center">{{ error.code }} </div>
                 <div class="text-center">{{ error.text }}</div>
-                <div class="text-center"></div>
+                <div class="grid grid-cols-2 text-center">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded" @click="changeState(error.index,error.code,error.text)">Mark as unresolved</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded">Undo previous action</button>
+                  </div>
               </div>
             </div>
             <div v-bind:class="{'hidden': openTab !== 2, 'block': openTab === 2}">
@@ -48,7 +51,10 @@
               <div class="grid grid-cols-3 gap-4 max-h-3 shadow-lg rounded py-6" v-for="error in unresolved" :key="error.index">
                 <div class="text-center">{{ error.code }} </div>
                 <div class="text-center">{{ error.text }}</div>
-                <div class="text-center"></div>
+                <div class="grid grid-cols-2 text-center">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded" @click="changeState(error.index,error.code,error.text)">Mark as Resolved</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded">Undo previous action</button>
+                  </div>
               </div>
             </div>
             <div v-bind:class="{'hidden': openTab !== 3, 'block': openTab === 3}">
@@ -60,7 +66,10 @@
               <div class="grid grid-cols-3 gap-4 max-h-3 shadow-lg rounded py-6" v-for="error in backlog" :key="error.index">
                 <div class="text-center">{{ error.code }} </div>
                 <div class="text-center">{{ error.text }}</div>
-                <div class="text-center"></div>
+                <div class="grid grid-cols-2 text-center">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded" @click="changeState(error.index,error.code,error.text)">Move to Unresolved</button>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white my-2 mx-4 rounded">Undo previous action</button>
+                  </div>
               </div>
             </div>
           </div>
@@ -115,9 +124,32 @@ export default {
       openTab: 1
     };
   },
+  computed : () => {
+    return {unresolved, resolved, backlog}
+  },
   methods: {
     toggleTabs: function(tabNumber){
       this.openTab = tabNumber
+    },
+    changeState : function(errorIndex, errorCode, errorDescription){
+      if (String(errorDescription).includes("unresolved") === true) {
+        var newUnresolved = []
+        var arrayLength = this.unresolved.length
+        var generatedKey = errorIndex - arrayLength
+        var deletedUnresolved = this.unresolved.splice(generatedKey,1,newUnresolved)
+      }
+      else if (String(errorDescription).includes("resolved") === true) {
+        var newResolved = []
+        var arrayLength = this.resolved.length
+        var generatedKey = errorIndex - arrayLength
+        var deletedResolved = this.resolved.splice(generatedKey,1,newResolved)
+      }
+      else if (String(errorDescription).includes("backlog") === true) {
+        // var newBacklog = []
+        // var arrayLength = this.backlog.length
+        // var generatedKey = errorIndex - arrayLength
+        // var deletedBacklog = this.backlog.splice(generatedKey,1,newBacklog)
+      }
     }
   }
 };
