@@ -5,11 +5,32 @@ from typing import Any, Dict
 
 from fastapi import FastAPI
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
 
 ERROR_CODES = [error_code for error_code in range(50)]
 LOGGER = logging.getLogger("API")
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+def application(environ, start_response):
+  if environ['REQUEST_METHOD'] == 'GET':
+    start_response(
+      '200 OK',
+      [
+        ('Content-Type', 'application/json'),
+        ('Access-Control-Allow-Origin', '*'),
+        ('Access-Control-Allow-Headers', 'Authorization, Content-Type'),
+        ('Access-Control-Allow-Methods', 'GET'),
+      ]
+    )
+    return ''
 
 def _generate_lists() -> Dict[str, Any]:
     """Generate resolved, unresolved and backlog lists."""
