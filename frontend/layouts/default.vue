@@ -10,6 +10,9 @@ import resolved from '../components/resolved';
 import backlog from '../components/backlog';
 import undo from '../components/undo';
 
+
+// Vue.mixin(undoAction);
+
 export default {
   components : {
     appHeader,

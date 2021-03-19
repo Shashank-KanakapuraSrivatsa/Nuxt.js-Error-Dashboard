@@ -70,6 +70,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
+
 export default {
    
     data() {
@@ -85,8 +86,5 @@ export default {
 };
 </script>
 <style scoped>
-/* .my-notification {
-  background: rgb(12, 189, 130);
-} */
 </style>
 

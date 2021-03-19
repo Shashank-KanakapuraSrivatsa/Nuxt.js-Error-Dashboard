@@ -1,15 +1,21 @@
 import axios from '@nuxtjs/axios';
 import Vue from 'vue';
-export const state = () => ({
+
+const defaultState = () => {
+   return {
     resolved : [],
     unresolved : [],
-    backlog : []
-})
+    backlog : [],
+    undoVal : null 
+   }
+}
+
+export const state = defaultState()
 
 export const getters = {
     getResolved: state => { return state.resolved },
     getUnresolved: state => { return state.unresolved},
-    gettBacklog: state => { return state.backlog}
+    getBacklog: state => { return state.backlog}
 }
 
 
@@ -32,6 +38,9 @@ export const actions = {
       );
     }
   },
+  resetInitialState ({ commit }) {
+    commit('RESET_State')
+  },
   DELETE_Unresolved({commit},payload) {
     commit('SPLICE_Unresolved',payload)
   },
@@ -40,12 +49,19 @@ export const actions = {
   },
   DELETE_Backlog({commit},payload) {
     commit('MOVE_Backlog',payload)
-  }
+  },
+
 }
 
 export const mutations = {
+  RESET_State(state){
+    setTimeout(function(){
+      Object.assign(state, defaultState())
+    }, 3000); 
+    
+  },
   SET_Unresolved (state, unresolved) {
-    state.unresolved = unresolved
+    state.unresolved = unresolved 
   },
   SET_Resolved (state, resolved) {
     state.resolved = resolved
@@ -88,5 +104,9 @@ export const mutations = {
       title : 'Action SUCCESSFUL!!',
       text : 'Error has been moved to UNRESOLVED list'
     })
+  },
+
+  emptyState() {
+    this.replaceState({ undoVal: null });       
   }
 }
